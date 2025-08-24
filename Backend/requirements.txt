@@ -1,0 +1,17 @@
+# Main Application
+fastapi
+uvicorn[standard]
+python-dotenv
+
+# LangChain & AI Core
+langchain
+langchain-groq
+langgraph
+duckduckgo-search
+google-search-results
+langchain_community
+aiohttp 
+groq
+
+langchain-openai  
+openai  

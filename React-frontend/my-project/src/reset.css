@@ -1,0 +1,18 @@
+/* CSS Reset to prevent unwanted scrollbars */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Global styles for proper full-viewport layout */
+html, body, #root, .app {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Make sure each section flows properly */
+section {
+  width: 100%;
+}

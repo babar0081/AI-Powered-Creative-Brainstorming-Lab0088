@@ -1,0 +1,10 @@
+# Netlify Build Settings
+[build]
+  # Kahan se build shuru karna hai (Base Directory)
+  base = "React-frontend/my-project/"
+
+  # Build karne ke liye kaunsi command chalani hai (Build Command)
+  command = "npm run build"
+
+  # Build hone ke baad, kaunsa folder live karna hai (Publish Directory)
+  publish = "dist/"

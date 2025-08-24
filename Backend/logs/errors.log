@@ -1,0 +1,37 @@
+2025-08-24 19:16:43,074 - ERROR - Error during search: Document is empty
+Traceback (most recent call last):
+  File "C:\Users\Azlan\Downloads\AI-Powered-Creative-Brainstorming-Lab\AI-Powered-Creative-Brainstorming-Lab\Backend\graph\agent_graph.py", line 70, in perform_search_node
+    results_string = await search_tool.ainvoke(query)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_core\tools\base.py", line 614, in ainvoke
+    return await self.arun(tool_input, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_core\tools\base.py", line 1001, in arun
+    raise error_to_raise
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_core\tools\base.py", line 970, in arun
+    response = await coro_with_context(coro, context)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_core\tools\base.py", line 740, in _arun
+    return await run_in_executor(None, self._run, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_core\runnables\config.py", line 617, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_core\runnables\config.py", line 608, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_community\tools\ddg_search\tool.py", line 112, in _run
+    raw_results = self.api_wrapper.results(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_community\utilities\duckduckgo_search.py", line 146, in results
+    for r in self._ddgs_text(query, max_results=max_results)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\langchain_community\utilities\duckduckgo_search.py", line 64, in _ddgs_text
+    ddgs_gen = ddgs.text(
+               ^^^^^^^^^^
+  File "C:\Users\Azlan\AppData\Roaming\Python\Python311\site-packages\duckduckgo_search\duckduckgo_search.py", line 198, in text
+    raise DuckDuckGoSearchException(err)
+duckduckgo_search.exceptions.DuckDuckGoSearchException: Document is empty

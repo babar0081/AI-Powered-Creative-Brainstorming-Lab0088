@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BrainStorm — Landing + Workspace</title>
+    <meta name="description" content="BrainStorm: a simple brainstorm board to capture, organize, and track ideas." />
+    <style>
+        /* ===== Base / Reset ===== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0f1220;
+            --bg-soft: #151a2e;
+            --card: #1c2240;
+            --text: #e7e9ff;
+            --muted: #b8bce3;
+            --brand: #7c5cff;
+            --brand-2: #24c1ff;
+            --accent: #ffd166;
+            --danger: #ff6b6b;
+            --success: #4cd97b;
+            --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+            --radius: 16px;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+            color: var(--text);
+            background: radial-gradient(1200px 600px at 80% -10%, rgba(124, 92, 255, .35), transparent), radial-gradient(1000px 800px at -10% 110%, rgba(36, 193, 255, .25), transparent), var(--bg);
+            line-height: 1.55;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        /* ===== Utilities ===== */
+        .container {
+            width: min(1100px, 92%);
+            margin: 0 auto;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            border: 0;
+            border-radius: 999px;
+            padding: .9rem 1.15rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: white;
+            box-shadow: 0 8px 22px rgba(124, 92, 255, .35);
+            transition: transform .15s ease, filter .2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+        }
+
+        .btn.secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, .2);
+            color: var(--text);
+            box-shadow: none;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: .25rem .6rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .08);
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        .pill {
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .05);
+            border-radius: 999px;
+            padding: .35rem .7rem;
+            font-size: .75rem;
+            color: var(--muted);
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .sr {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ===== Nav ===== */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: saturate(140%) blur(8px);
+            background: rgba(15, 18, 32, .55);
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .nav .inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .85rem 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-weight: 700;
+            letter-spacing: .2px;
+        }
+
+        .logo {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: conic-gradient(from 0deg, var(--brand), var(--brand-2), var(--accent));
+            box-shadow: 0 6px 16px rgba(36, 193, 255, .35);
+        }
+
+        .navlinks {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .navlinks a {
+            color: var(--muted);
+            font-weight: 600;
+            font-size: .95rem;
+        }
+
+        .navlinks a:hover {
+            color: var(--text);
+        }
+
+        /* ===== Hero ===== */
+        .hero {
+            padding: 5rem 0 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 3.6vw + 1rem, 3.25rem);
+            line-height: 1.05;
+            margin: .3rem 0 .75rem;
+        }
+
+        .gradient {
+            background: linear-gradient(135deg, #fff 0%, #c7d7ff 40%, #9de5ff 70%, #ffd166 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: clamp(1rem, .6vw + .8rem, 1.15rem);
+        }
+
+        .hero .cta {
+            display: flex;
+            gap: .75rem;
+            justify-content: center;
+            margin-top: 1.35rem;
+            flex-wrap: wrap;
+        }
+
+        .floating {
+            position: absolute;
+            inset: auto 0 -140px;
+            height: 260px;
+            background: radial-gradient(400px 120px at 30% 50%, rgba(124, 92, 255, .25), transparent), radial-gradient(500px 160px at 70% 50%, rgba(36, 193, 255, .18), transparent);
+            filter: blur(28px);
+            pointer-events: none;
+        }
+
+        /* ===== Logos row ===== */
+        .logos {
+            opacity: .9;
+            padding: 1.6rem 0 2.2rem;
+        }
+
+        .logo-row {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 1.4rem;
+            align-items: center;
+        }
+
+        .logo-cell {
+            opacity: .66;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: var(--radius);
+            padding: .9rem;
+            text-align: center;
+            font-weight: 600;
+            color: #a9b3e8;
+        }
+
+        /* ===== Feature cards ===== */
+        .features {
+            padding: 2rem 0 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: var(--radius);
+            padding: 1.1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h3 {
+            margin: 0 0 .4rem;
+            font-size: 1.05rem;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+        /* ===== Two‑column section ===== */
+        .twocol {
+            padding: 2.6rem 0;
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .demo {
+            background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02));
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 18px;
+            padding: 1rem;
+        }
+
+        .demo .bar {
+            display: flex;
+            gap: .4rem;
+            margin-bottom: .8rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff6b6b;
+        }
+
+        .dot:nth-child(2) {
+            background: #ffd166;
+        }
+
+        .dot:nth-child(3) {
+            background: #4cd97b;
+        }
+
+        /* ===== Workspace (App) ===== */
+        .workspace-wrap {
+            padding: 2.2rem 0 3rem;
+            display: none;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 1rem;
+        }
+
+        .side {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: var(--radius);
+            padding: 1rem;
+            height: min(680px, 70vh);
+            overflow: auto;
+        }
+
+        .side h4 {
+            margin: .2rem 0 1rem;
+        }
+
+        .side ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: .35rem;
+        }
+
+        .side li {
+            padding: .55rem .7rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, .06);
+            background: rgba(255, 255, 255, .02);
+            cursor: pointer;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .side li.active,
+        .side li:hover {
+            background: rgba(124, 92, 255, .14);
+            color: #fff;
+            border-color: rgba(124, 92, 255, .35);
+        }
+
+        .board {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: var(--radius);
+            padding: 1rem;
+            min-height: 420px;
+        }
+
+        .controls {
+            display: flex;
+            gap: .6rem;
+            margin-bottom: .7rem;
+            flex-wrap: wrap;
+        }
+
+        .input {
+            flex: 1;
+            min-width: 220px;
+            padding: .8rem .9rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .04);
+            color: var(--text);
+            outline: none;
+        }
+
+        .columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .8rem;
+        }
+
+        .col {
+            background: rgba(255, 255, 255, .03);
+            border: 1px dashed rgba(255, 255, 255, .12);
+            border-radius: 14px;
+            padding: .7rem;
+        }
+
+        .col h5 {
+            margin: .1rem 0 .6rem;
+            color: var(--muted);
+        }
+
+        .cardy {
+            display: grid;
+            gap: .5rem;
+        }
+
+        .idea {
+            background: linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .03));
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 12px;
+            padding: .75rem .8rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+            animation: pop .2s ease;
+        }
+
+        .idea small {
+            color: var(--muted);
+        }
+
+        .idea .actions {
+            display: flex;
+            gap: .35rem;
+        }
+
+        .chip {
+            font-size: .75rem;
+            padding: .25rem .5rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        .ghost {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, .16);
+            color: var(--text);
+            border-radius: 10px;
+            padding: .35rem .55rem;
+            cursor: pointer;
+        }
+
+        .danger {
+            background: rgba(255, 107, 107, .12);
+            border: 1px solid rgba(255, 107, 107, .35);
+        }
+
+        .success {
+            background: rgba(76, 217, 123, .14);
+            border: 1px solid rgba(76, 217, 123, .35);
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(.98);
+                opacity: .6;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            color: var(--muted);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2.4rem;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 900px) {
+            .twocol {
+                grid-template-columns: 1fr;
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .columns {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== Nav ===== -->
+    <header class="nav">
+        <div class="container inner">
+            <div class="brand"><span class="logo" aria-hidden="true"></span> BrainStorm</div>
+            <nav class="navlinks">
+                <a href="#features">Features</a>
+                <a href="#how">How it works</a>
+                <a id="openApp" class="pill" href="#app.py" id="runApp">Open App →</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== Hero / Landing ===== -->
+    <section class="hero container" id="home">
+        <span class="tag">Idea → Plan → Action</span>
+        <h1>Turn messy thoughts into a <span class="gradient">clear plan</span>.</h1>
+        <p>Capture ideas, sort them into stages, and keep momentum with a lightweight board — no signup required.</p>
+        <div class="cta">
+            <button class="btn" id="ctaStart">Start Brainstorming</button>
+            <a class="btn secondary" href="#how">See how it works</a>
+        </div>
+        <div class="floating" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===== Logos row (placeholder) ===== -->
+    <section class="logos container" aria-label="As trusted by">
+        <div class="logo-row">
+            <div class="logo-cell">Acme</div>
+            <div class="logo-cell">Nova</div>
+            <div class="logo-cell">Atlas</div>
+            <div class="logo-cell">Pixel</div>
+            <div class="logo-cell">Lambda</div>
+        </div>
+    </section>
+
+    <!-- ===== Feature cards ===== -->
+    <section class="features container" id="features">
+        <div class="grid">
+            <div class="card">
+                <h3>⚡ Fast capture</h3>
+                <p>Hit "+" and drop an idea on the board. Keyboard friendly.</p>
+            </div>
+            <div class="card">
+                <h3>🗂 Simple stages</h3>
+                <p>To‑Do, In Progress, Done. Add your own tags for clarity.</p>
+            </div>
+            <div class="card">
+                <h3>🧭 One focus metric</h3>
+                <p>Star what matters. Keep your team aligned on outcomes.</p>
+            </div>
+            <div class="card">
+                <h3>📤 Export</h3>
+                <p>Copy to clipboard or download your session as JSON.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Two‑column "How it works" ===== -->
+    <section class="twocol container" id="how">
+        <div>
+            <h2>How it works</h2>
+            <p class="muted">Add ideas, drag across stages, and tag for context. Use it solo or screen‑share with your
+                team.</p>
+            <ul class="muted">
+                <li>⏱ Add ideas quickly with the input bar.</li>
+                <li>🏷 Optional tags like #research, #design, #risk.</li>
+                <li>📎 Export everything to keep your notes synced.</li>
+            </ul>
+            <div style="margin-top:1rem; display:flex; gap:.6rem; flex-wrap:wrap;">
+                <button class="btn" id="howStart">Open the App</button>
+                <span class="pill">No account • Works offline</span>
+            </div>
+        </div>
+        <div class="demo">
+            <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <img alt="Demo preview of the BrainStorm board"
+                src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='900' height='520'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%231c2240'/><stop offset='100%' stop-color='%230f1220'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g)'/><rect x='24' y='24' width='260' height='460' rx='14' fill='rgba(255,255,255,0.06)' stroke='rgba(255,255,255,0.1)'/><rect x='320' y='24' width='260' height='460' rx='14' fill='rgba(255,255,255,0.06)' stroke='rgba(255,255,255,0.1)'/><rect x='616' y='24' width='260' height='460' rx='14' fill='rgba(255,255,255,0.06)' stroke='rgba(255,255,255,0.1)'/><g fill='rgba(255,255,255,0.18)'><rect x='44' y='70' rx='10' width='220' height='46'/><rect x='44' y='130' rx='10' width='220' height='46'/><rect x='44' y='190' rx='10' width='220' height='46'/><rect x='340' y='70' rx='10' width='220' height='46'/><rect x='636' y='70' rx='10' width='220' height='46'/></g></svg>" />
+        </div>
+    </section>
+
+    <!-- ===== Workspace (App) ===== -->
+    <section class="workspace-wrap" id="app">
+        <div class="container">
+            <div
+                style="display:flex; align-items:center; justify-content:space-between; margin-bottom:.6rem; gap: .8rem;">
+                <h2 style="margin:0">Brainstorm Board</h2>
+                <div style="display:flex; align-items:center; gap:.5rem; flex-wrap:wrap;">
+                    <button class="btn secondary" id="copyBtn">Copy All</button>
+                    <button class="btn secondary" id="downloadBtn">Download JSON</button>
+                    <span id="statusPill" class="pill">Offline • Local only</span>
+                </div>
+            </div>
+
+            <div class="workspace">
+                <!-- Sidebar -->
+                <aside class="side">
+                    <h4>Filters</h4>
+                    <ul id="filters">
+                        <li class="active" data-filter="all">All</li>
+                        <li data-filter="todo">To‑Do</li>
+                        <li data-filter="progress">In Progress</li>
+                        <li data-filter="done">Done</li>
+                    </ul>
+
+                    <h4 style="margin-top:1.2rem">Tips</h4>
+                    <p class="muted" style="margin:0 0 .6rem">Use short, punchy ideas. Add #tags for context.</p>
+                    <div class="chip">#research</div>
+                    <div class="chip">#design</div>
+                    <div class="chip">#risk</div>
+                </aside>
+
+                <!-- Board -->
+                <section class="board">
+                    <div class="controls">
+                        <input id="ideaInput" class="input" placeholder="Add an idea… (tip: include #tags)" />
+                        <button id="addBtn" class="btn" title="Add idea">➕ Add</button>
+                        <button id="clearBtn" class="btn secondary" title="Clear all">🧹 Clear</button>
+                    </div>
+                    <div class="columns">
+                        <div class="col" data-col="todo">
+                            <h5>To‑Do</h5>
+                            <div class="cardy" id="col-todo"></div>
+                        </div>
+                        <div class="col" data-col="progress">
+                            <h5>In Progress</h5>
+                            <div class="cardy" id="col-progress"></div>
+                        </div>
+                        <div class="col" data-col="done">
+                            <h5>Done</h5>
+                            <div class="cardy" id="col-done"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">© <span id="year"></span> BrainStorm • Crafted for quick ideation</div>
+    </footer>
+
+    <script>
+        const $ = (q, root = document) => root.querySelector(q);
+        const $$ = (q, root = document) => [...root.querySelectorAll(q)];
+
+        const state = {
+            ideas: JSON.parse(localStorage.getItem('brainstorm.ideas') || '[]'),
+            filter: 'all'
+        };
+
+        const save = () => localStorage.setItem('brainstorm.ideas', JSON.stringify(state.ideas));
+        document.getElementById("runApp").addEventListener("click", async () => {
+            try {
+                let response = await fetch("http://127.0.0.1:5000/run-app");  // Flask route
+                let data = await response.json();
+                alert("Response from Python: " + data.message);
+            } catch (err) {
+                console.error(err);
+                alert("Error connecting to backend");
+            }
+        });
+
+
+        function addIdea(text) {
+            const t = (text ?? $('#ideaInput').value).trim();
+            if (!t) return;
+            state.ideas.push({ text: t, status: 'todo', ts: Date.now() });
+            $('#ideaInput').value = '';
+            save();
+            render();
+        }
+
+        function setStatus(idx, status) {
+            state.ideas[idx].status = status;
+            save();
+            render();
+        }
+
+        function delIdea(idx) {
+            state.ideas.splice(idx, 1);
+            save();
+            render();
+        }
+
+        function clearAll() {
+            if (!confirm('Clear all ideas?')) return;
+            state.ideas = [];
+            save();
+            render();
+        }
+
+        function copyAll() {
+            const lines = state.ideas.map(i => - [${i.status}] ${i.text});
+            navigator.clipboard.writeText(lines.join('\n'));
+            toast('Copied to clipboard');
+        }
+
+        function downloadJSON() {
+            const blob = new Blob([JSON.stringify(state.ideas, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = brainstorm_${Date.now()}.json; a.click(); URL.revokeObjectURL(url);
+        }
+
+
+        function render() {
+            const cols = { todo: $('#col-todo'), progress: $('#col-progress'), done: $('#col-done') };
+            Object.values(cols).forEach(c => c.innerHTML = '');
+            state.ideas.forEach((idea, idx) => {
+                if (state.filter !== 'all' && idea.status !== state.filter) return;
+                const el = document.createElement('div');
+                el.className = 'idea';
+                const tags = (idea.text.match(/#[\w-]+/g) || []).join(' ');
+                el.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:.6rem;">
+            <div>
+              <div>${escapeHTML(idea.text)}</div>
+              <small>${tags || 'No tags'} • ${new Date(idea.ts).toLocaleTimeString()}</small>
+            </div>
+            <div class="actions">
+              <button class="ghost success" title="Mark in progress">⏳</button>
+              <button class="ghost success" title="Mark done">✅</button>
+              <button class="ghost danger" title="Delete">🗑</button>
+            </div>
+          </div>`;
+                const [btnProg, btnDone, btnDel] = $$('.actions .ghost', el);
+                btnProg.addEventListener('click', () => setStatus(idx, 'progress'));
+                btnDone.addEventListener('click', () => setStatus(idx, 'done'));
+                btnDel.addEventListener('click', () => delIdea(idx));
+                cols[idea.status].appendChild(el);
+            });
+        }
+
+        // Simple toast
+        let toastTimer;
+        function toast(msg) {
+            let t = $('#toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'toast';
+                t.style.position = 'fixed'; t.style.left = '50%'; t.style.bottom = '28px'; t.style.transform = 'translateX(-50%)';
+                t.style.background = 'rgba(0,0,0,.6)'; t.style.color = '#fff'; t.style.padding = '10px 14px'; t.style.borderRadius = '12px'; t.style.backdropFilter = 'blur(6px)';
+                t.style.fontWeight = '600'; t.style.boxShadow = '0 6px 14px rgba(0,0,0,.35)'; t.style.zIndex = '1000';
+                document.body.appendChild(t);
+            }
+            t.textContent = msg; t.style.opacity = '1';
+            clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.opacity = '0', 1400);
+        }
+
+        function escapeHTML(s) { return s.replace(/[&<>"] /g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', ' ': '&nbsp;' }[c])); }
+
+        // Routing (Landing <-> App)
+        function openApp() {
+            document.querySelector('.workspace-wrap').style.display = 'block';
+            document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Events
+        document.addEventListener('DOMContentLoaded', () => {
+            $('#year').textContent = new Date().getFullYear();
+            render();
+
+            $('#addBtn').addEventListener('click', () => addIdea());
+            $('#ideaInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') addIdea(); });
+            $('#clearBtn').addEventListener('click', clearAll);
+            $('#copyBtn').addEventListener('click', copyAll);
+            $('#downloadBtn').addEventListener('click', downloadJSON);
+
+            $('#ctaStart').addEventListener('click', openApp);
+            $('#howStart').addEventListener('click', openApp);
+            $('#openApp').addEventListener('click', openApp);
+
+            $('#filters').addEventListener('click', (e) => {
+                const li = e.target.closest('li[data-filter]'); if (!li) return;
+                $$('#filters li').forEach(x => x.classList.remove('active'));
+                li.classList.add('active');
+                state.filter = li.dataset.filter; render();
+            });
+        });
+    </script>
+</body>
+
+</html>
